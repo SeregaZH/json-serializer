@@ -3,14 +3,18 @@ module Main where
 import Lib
 import Serializer.StringJsonSerializer
 import Serializer.Json
+import System.IO
 
 main :: IO ()
-main = putStrLn "some" {-printJson (JObject [
-                        ("Name", JString "Sergey"),
-                        ("Age", JNumber 27),
-                        ("Roles", JArray [JString "Developer", JString "Team Lead"])
-                    ])-}
+main = do
+        out <- openFile "output.json" WriteMode
+        hPutStrLn out (serialize.(<@>).JObj $ [
+                        ("Name", (<@>) "Sergey"),
+                        ("Age", (<@>) (27::Int)),
+                        ("Roles", (<@>).JArr $ [(<@>) "Developer", (<@>) "Team Lead"])])
+        hClose out
+        {-input <- openFile "output.json" ReadMode
+        content <- hGetContent input
+        let json = deserialize content-}
 
 
-{-printJson :: JValue -> IO ()
-printJson value = putStrLn (serialize value)-}
